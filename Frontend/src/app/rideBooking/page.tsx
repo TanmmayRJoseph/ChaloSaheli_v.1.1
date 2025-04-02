@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { SocketContext } from "@/context/socketContext";
 import DriverLoading from "../components/WaitingForDrivers";
+import RideConfirmation from "@/app/components/ConfirmedRide"
 
 const containerStyle = {
   width: "100%",
@@ -14,6 +15,18 @@ const containerStyle = {
 
 interface Suggestion {
   description: string;
+}
+interface RideDetails{
+  captain: {
+    _id: string;
+    name: string;
+    phoneNo: string;
+    vehicle: string;
+    city: string;
+  };
+  pickup: string;
+  destination: string;
+  otp?: string; // Added optional OTP field
 }
 
 export default function RideBooking() {
@@ -40,6 +53,9 @@ export default function RideBooking() {
     { type: "Car", price: "$12" },
   ];
   const [waitingForDrivers,setWaitingForDrivers]=useState(false)
+  const [confirmRideDetails, setconfirmRideDetails] = useState<RideDetails | null>(null);
+
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -56,6 +72,9 @@ export default function RideBooking() {
 
   socket?.on("ride-confirmed",ride=>{
     console.log("here is the ride",ride)
+    setWaitingForDrivers(false)
+   
+    setconfirmRideDetails(ride)
   })
 
   //*location DONT CHANGE
@@ -351,6 +370,7 @@ export default function RideBooking() {
 
    {/* Driver Loading */}
       {waitingForDrivers && <DriverLoading />}
+      {confirmRideDetails && <RideConfirmation ride={confirmRideDetails}/>}
     </div>
   );
 }
