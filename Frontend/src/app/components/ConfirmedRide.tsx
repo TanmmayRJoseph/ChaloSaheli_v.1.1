@@ -6,7 +6,7 @@ interface RideDetails {
     _id: string;
     name: string;
     phoneNo: string;
-    vehicle: string;
+    vechile: string;
     city: string;
   };
   pickup: string;
@@ -22,7 +22,7 @@ const RideConfirmation: React.FC<{ ride: RideDetails }> = ({ ride }) => {
       <div className="p-4 border rounded-lg bg-gray-100">
         <h3 className="text-lg font-semibold text-gray-800">{ride.captain?.name}</h3>
         <p className="text-gray-600">Phone: {ride.captain?.phoneNo}</p>
-        <p className="text-gray-600">Vehicle: {ride.captain?.vehicle}</p>
+        <p className="text-gray-600">Vehicle: {ride.captain?.vechile}</p>
         <p className="text-gray-600">City: {ride.captain?.city}</p>
       </div>
       <div className="mt-4">
