@@ -48,8 +48,8 @@ FemRide is a women-only ride-sharing platform ensuring **safety, security, and c
 ### ⚙️ Installation
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/femride.git
-cd femride
+https://github.com/TanmmayRJoseph/ChaloSaheli_v.1.1
+cd ChaloSaheli_v.1.1
 
 # Install dependencies
 npm install
