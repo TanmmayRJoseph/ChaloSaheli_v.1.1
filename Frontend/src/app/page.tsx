@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="ml-12 mt-5 "
+          className="ml-40 mt-5 mr-30 "
         >
           <Image
             src="/image/ChaloSaheliLogo.png"
@@ -34,7 +34,7 @@ export default function Home() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="text-pink-700 text-xl font-semibold mt-4"
+          className="text-pink-700 text-3xl font-semibold mt-4"
         >
           Women for Women, Safe Journey Always.
         </motion.h1>
@@ -45,7 +45,10 @@ export default function Home() {
           whileTap={{ scale: 0.9 }}
           className="mt-6 px-6 py-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition-all duration-300"
         >
-          <Link href="/langSelection">  Experience</Link>
+          <Link className="text-2xl" href="/mainpage">
+            {" "}
+            Experience
+          </Link>
         </motion.button>
       </motion.div>
     </div>
