@@ -18,7 +18,7 @@ export default function OffRoadPage() {
           Looks like We’re Off the Road Right Now!
         </p>
         <p className="mt-2 text-xl text-pink-700 font-medium">
-          Our rides are available from <span className="font-bold">6 AM to 8 PM</span>.
+          Our rides are available from <span className="font-bold">6 AM to 6 PM</span>.
         </p>
         <p className="mt-2 text-xl text-pink-700 font-medium">
           Feel free to check within our service hours, we can’t wait to take you on our next adventure!

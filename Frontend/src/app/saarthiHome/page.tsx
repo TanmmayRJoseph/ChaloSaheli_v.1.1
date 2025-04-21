@@ -18,6 +18,7 @@ interface Ride {
   pickup: string;
   destination: string;
   fare: number;
+  otp: string;
 }
 
 export default function DriverDashboard() {
@@ -118,6 +119,7 @@ export default function DriverDashboard() {
         pickup={rideRequest.pickup}
         destination={rideRequest.destination}
         fare={rideRequest.fare}
+        
          
         />
       )}

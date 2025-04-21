@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
 
 interface RideRequestProps {
-  user?: {  // Make user optional to avoid undefined errors
+  user?: {
     _id: string;
     name: string;
     phoneNo: number;
@@ -14,18 +15,38 @@ interface RideRequestProps {
 }
 
 const RideRequest: React.FC<RideRequestProps> = ({
-  user = { _id: "", name: "Unknown", phoneNo: 0 }, // Default user object
+  user = { _id: "", name: "Unknown", phoneNo: 0 },
+  rideId,
   pickup,
   destination,
-  fare
+  fare,
 }) => {
   const [otp, setOtp] = useState("");
 
-  const handleStartRide = () => {
-    if (otp.length === 6) {
-      alert("Ride Started!");
-    } else {
+  const handleStartRide = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!/^\d{6}$/.test(otp)) {
       alert("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    try {
+      const response = await axios.get("http://localhost:5000/ride/start-ride", {
+        params: { rideId, otp },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("Ride started successfully!");
+      } else {
+        alert("Failed to start ride. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error starting ride:", error);
+      alert("An error occurred while starting the ride.");
     }
   };
 
@@ -37,7 +58,8 @@ const RideRequest: React.FC<RideRequestProps> = ({
       <p><strong>Pickup:</strong> {pickup}</p>
       <p><strong>Destination:</strong> {destination}</p>
       <p><strong>Fare:</strong> ₹{fare}</p>
-      <div className="mt-4">
+
+      <form onSubmit={handleStartRide} className="mt-4">
         <label className="block text-sm font-medium">Enter OTP:</label>
         <input
           type="text"
@@ -47,13 +69,13 @@ const RideRequest: React.FC<RideRequestProps> = ({
           className="w-full p-2 mt-1 border rounded-md focus:ring-pink-500 focus:border-pink-500"
           placeholder="Enter 6-digit OTP"
         />
-      </div>
-      <button
-        onClick={handleStartRide}
-        className="mt-4 w-full bg-pink-600 text-white py-2 rounded-md hover:bg-pink-700"
-      >
-        Start Ride
-      </button>
+        <button
+          type="submit"
+          className="mt-4 w-full bg-pink-600 text-white py-2 rounded-md hover:bg-pink-700"
+        >
+          Start Ride
+        </button>
+      </form>
     </div>
   );
 };

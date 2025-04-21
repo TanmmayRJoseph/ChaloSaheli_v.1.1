@@ -1,7 +1,9 @@
+import { sendMessageToSocketId } from "../socket.js";
 import Ride from "../models/ride.js";
 import { getDistanceTime } from "./maps.service.js";
 import crypto from "crypto";
 import mongoose from "mongoose";
+
 function generateOTP(num) {
   function generateOtp(num) {
     return crypto
@@ -55,6 +57,7 @@ export async function getFare(pickup, destination) {
   console.log(fare); //!Debugging step
   return fare;
 }
+
 export const createRide = async ({
   user,
   pickup,
@@ -95,9 +98,6 @@ export const createRide = async ({
 // return ride;
 // };
 
-
-
-
 export async function confirmRide({ rideId, captainId }) {
   console.log("Confirming Ride...");
   console.log("Received rideId:", rideId);
@@ -135,5 +135,43 @@ export async function confirmRide({ rideId, captainId }) {
   return ride;
 }
 
+export const startRideService = async ({ rideId, otp, captain }) => {
+  if (!rideId || !otp || !captain) {
+    throw new Error("Missing required fields");
+  }
 
+  const ride = await Ride.findOne({
+    _id: rideId,
+  })
+    .populate("user")
+    .populate("captain")
+    .select("+otp");
 
+  if (!ride) {
+    throw new Error("Ride not found");
+  }
+
+  if (ride.status !== "accepted") {
+    throw new Error("Ride not accepted");
+  }
+
+  if (ride.otp !== otp) {
+    throw new Error("Invalid OTP");
+  }
+
+  await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+    },
+    {
+      status: "ongoing",
+    }
+  );
+
+  sendMessageToSocketId(ride.user.socketId, {
+    event: "ride-started",
+    data: ride,
+  });
+
+  return ride;
+};

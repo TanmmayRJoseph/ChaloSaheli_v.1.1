@@ -1,4 +1,9 @@
-import { createRide, getFare, confirmRide } from "../services/ride.service.js";
+import {
+  createRide,
+  getFare,
+  confirmRide,
+  startRideService,
+} from "../services/ride.service.js";
 import {
   getSaarthiInTheRadius,
   getAddressCoordinate,
@@ -44,6 +49,7 @@ export const createRideController = async (req, res) => {
   }
 };
 
+//* Get Fare
 export const getFareController = async (req, res) => {
   const { pickup, destination } = req.query;
   try {
@@ -54,6 +60,7 @@ export const getFareController = async (req, res) => {
   }
 };
 
+//* Confirm Ride
 export const confirmRideController = async (req, res) => {
   try {
     console.log("Received Request Body:", req.body); // Debugging Step
@@ -62,10 +69,12 @@ export const confirmRideController = async (req, res) => {
 
     if (!rideId || !captainId) {
       console.error("Missing Required Fields: ", { rideId, captainId });
-      return res.status(400).json({ error: "Ride ID and Captain ID are required" });
+      return res
+        .status(400)
+        .json({ error: "Ride ID and Captain ID are required" });
     }
 
-    const ride = await confirmRide({rideId, captainId});
+    const ride = await confirmRide({ rideId, captainId });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "ride-confirmed",
@@ -79,3 +88,25 @@ export const confirmRideController = async (req, res) => {
   }
 };
 
+//* Start Ride
+export const startRide = async (req, res) => {
+  const { rideId, otp } = req.query;
+  try {
+    const ride = await startRideService({
+      rideId,
+      otp,
+      captain: req.captain._id,
+    });
+
+    console.log("Ride started and here is the ride with all details:", ride); //!Debugging console
+
+    sendMessageToSocketId(ride.user.socketId, {
+      event: "ride-started",
+      data: ride,
+    });
+    return res.status(200).json(ride);
+  } catch (error) {
+    console.log("Error in startRide:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};

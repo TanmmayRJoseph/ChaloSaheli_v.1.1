@@ -6,22 +6,66 @@ import { motion } from "framer-motion";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { SocketContext } from "@/context/socketContext";
 import DriverLoading from "../components/WaitingForDrivers";
-import RideConfirmation from "@/app/components/ConfirmedRide"
+import RideConfirmation from "@/app/components/ConfirmedRide";
+import StartRide from "@/app/startRide/page";
+import { useRouter } from "next/navigation";
 
 const containerStyle = {
   width: "100%",
   height: "100%",
 };
 
-interface Suggestion {
-  description: string;
-}
-interface RideDetails{
+interface RideStarted {
+  _id: string;
+  user: {
+    _id: string;
+    name: string;
+    phoneNo: number;
+    gender: string;
+    emergencyNo: number;
+    dob: string;
+    emailId: string;
+    address: string;
+    userType: string;
+    socketId: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
   captain: {
     _id: string;
     name: string;
     phoneNo: string;
-    vehicle: string;
+    gender: string;
+    vechile: string;
+    dob: string;
+    emailId: string;
+    city: string;
+    userType: string;
+    socketId: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+  pickup: string;
+  destination: string;
+  fare: number;
+  status: string;
+  otp: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+interface Suggestion {
+  description: string;
+}
+interface RideDetails {
+  captain: {
+    _id: string;
+    name: string;
+    phoneNo: string;
+    vechile: string;
     city: string;
   };
   pickup: string;
@@ -30,7 +74,12 @@ interface RideDetails{
 }
 
 export default function RideBooking() {
+  const router = useRouter();
   const [pickup, setPickup] = useState("");
+  const [startRide, setStartRide] = useState(false); //today
+  const [sendingDataToStartRide, setSendingDataToStartRide] =
+    useState<RideStarted | null>(null);
+
   const [destination, setDestination] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [pickupSuggestions, setPickupSuggestions] = useState<Suggestion[]>([]);
@@ -52,10 +101,9 @@ export default function RideBooking() {
     { type: "Auto", price: "$8" },
     { type: "Car", price: "$12" },
   ];
-  const [waitingForDrivers,setWaitingForDrivers]=useState(false)
-  const [confirmRideDetails, setconfirmRideDetails] = useState<RideDetails | null>(null);
-
-
+  const [waitingForDrivers, setWaitingForDrivers] = useState(false);
+  const [confirmRideDetails, setconfirmRideDetails] =
+    useState<RideDetails | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -70,12 +118,31 @@ export default function RideBooking() {
     }
   }, [socket]);
 
-  socket?.on("ride-confirmed",ride=>{
-    console.log("here is the ride",ride)
-    setWaitingForDrivers(false)
-   
-    setconfirmRideDetails(ride)
-  })
+  //*Confirm Ride Socket Event
+  socket?.on("ride-confirmed", (ride) => {
+    console.log("here is the ride", ride);
+    setWaitingForDrivers(false);
+
+    setconfirmRideDetails(ride);
+  });
+
+  // * Start ride socket event
+  useEffect(() => {
+    const handleRideStarted = (ride: RideStarted) => {
+      console.log("here is the ride", ride);
+      setSendingDataToStartRide(ride);
+      setconfirmRideDetails(null);
+      setStartRide(true);
+    };
+
+    // ✅ Attach the socket listener correctly
+    socket?.on("ride-started", handleRideStarted);
+
+    // ✅ Cleanup to avoid memory leaks
+    return () => {
+      socket?.off("ride-started", handleRideStarted);
+    };
+  }, [socket, router]);
 
   //*location DONT CHANGE
   useEffect(() => {
@@ -208,7 +275,7 @@ export default function RideBooking() {
     );
     console.log(response.data);
     setShowPopup(false);
-    setWaitingForDrivers(true)
+    setWaitingForDrivers(true);
   }
 
   return (
@@ -368,9 +435,10 @@ export default function RideBooking() {
         </div>
       )}
 
-   {/* Driver Loading */}
+      {/* Driver Loading */}
       {waitingForDrivers && <DriverLoading />}
-      {confirmRideDetails && <RideConfirmation ride={confirmRideDetails}/>}
+      {confirmRideDetails && <RideConfirmation ride={confirmRideDetails} />}
+      {startRide && <StartRide ride={sendingDataToStartRide} />}
     </div>
   );
 }

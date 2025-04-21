@@ -59,11 +59,11 @@ export default function LoginPage() {
         { withCredentials: true }
       );
       if (response.status === 200) {
-        const { loggedInUser } = response.data;
+        const { loggedInUser, token } = response.data;
 
         // * Store karwa do user ko local storage mein
         localStorage.setItem("user", JSON.stringify(loggedInUser));
-        // localStorage.setItem("token", token);
+        localStorage.setItem("token", token);
 
         toast.success("Login successful!");
         router.push("/saarthiHome");
