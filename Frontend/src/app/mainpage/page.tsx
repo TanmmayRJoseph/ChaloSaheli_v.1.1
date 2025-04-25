@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function MainPage() {
   return (
-    <div className="min-h-screen  bg-pink-100 p-6">
+    <div className="min-h-screen bg-pink-100 p-6">
       {/* Heading Section */}
       <div className="flex justify-between items-center text-center px-6">
         <Image
@@ -45,37 +45,39 @@ export default function MainPage() {
         </nav>
         <div className=" border-t-2 border-pink-500 mt-2"></div>
       </div>
-      {/* main img and chatbot will go here */}
-      <div className="img flex py-10 px-10 justify-center  ">
-        <div className="imgsection">
+
+      {/* Main image section with borders and animations */}
+      <div className="img flex py-10 px-10 justify-center gap-8 flex-wrap">
+        <div className="imgsection transition-transform duration-300 hover:scale-105 border-4 border-pink-300 rounded-xl shadow-md">
           <Image
             src="/image/CS BIKE.png"
             height={400}
             width={400}
-            alt="Girl Head"
-            className="scale-x-[-1] mr-10 "
+            alt="Bike"
+            className="scale-x-[-1] rounded-lg"
           />
-          </div>
+        </div>
 
-          <div className="imgsection">
+        <div className="imgsection transition-transform duration-300 hover:scale-105 border-4 border-pink-300 rounded-xl shadow-md">
           <Image
             src="/image/CS AUTO.png"
             height={400}
             width={400}
-            alt="Girl Head"
-            className="scale-x-[-1] mr-10"
+            alt="Auto"
+            className="scale-x-[-1] rounded-lg"
           />
-          </div>
-          <div className="imgsection">
+        </div>
+
+        <div className="imgsection transition-transform duration-300 hover:scale-105 border-4 border-pink-300 rounded-xl shadow-md">
           <Image
             src="/image/CSCAR.png"
             height={400}
             width={400}
-            alt="Girl Head"
-            className="scale-x-[-1] mr-10 "
+            alt="Car"
+            className="scale-x-[-1] rounded-lg"
           />
-          </div>
         </div>
       </div>
+    </div>
   );
 }

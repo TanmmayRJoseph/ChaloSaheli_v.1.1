@@ -110,3 +110,20 @@ export const startRide = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+//*End ride
+export const endRide = async (req, res) => {
+  const { rideId } = req.body;
+  try {
+    const ride = await endRideService({ rideId, captain: req.captain});
+
+    sendMessageToSocketId(ride.user.socketId, {
+      event: "ride-ended",
+      data: ride,
+    });
+
+    return res.status(200).json(ride);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};

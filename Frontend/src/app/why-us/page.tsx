@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation"; // <-- import router
 
 export default function WhyRide() {
-  // Animation Variants
+  const router = useRouter(); // <-- initialize router
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 40 },
     visible: (i: number) => ({
@@ -16,6 +18,14 @@ export default function WhyRide() {
 
   return (
     <div className="min-h-screen bg-pink-100 flex flex-col items-center p-10 relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-6 left-6 bg-white border-2 border-pink-500 text-pink-600 px-4 py-2 rounded-full font-medium hover:bg-pink-200 transition"
+      >
+        ← Back
+      </button>
+
       {/* Title */}
       <div className="border-4 border-pink-500 rounded-lg px-8 py-4 mb-14">
         <h1 className="text-4xl font-bold text-pink-600">Why Ride with Us?</h1>

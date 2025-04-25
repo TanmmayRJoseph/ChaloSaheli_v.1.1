@@ -1,7 +1,11 @@
+"use client"
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation'; // ✅ Import useRouter
 
 export default function LanguageSelection() {
+  const router = useRouter(); // ✅ Initialize router
+
   return (
     <div className="relative z-0 flex flex-col items-center justify-center min-h-screen bg-pink-100 overflow-hidden">
       {/* Background Wings */}
@@ -11,11 +15,19 @@ export default function LanguageSelection() {
           alt="Wings Background"
           width={900}
           height={900}
-          objectPosition='center'
-          objectFit='cover'
-          layout='absolute'
+          objectPosition="center"
+          objectFit="cover"
+          layout="absolute"
         />
       </div>
+
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-5 left-5 bg-white border-2 border-pink-500 text-pink-600 px-4 py-2 rounded-full font-medium hover:bg-pink-200 transition"
+      >
+        ← Back
+      </button>
 
       {/* Logo in Top Right */}
       <div className="absolute top-5 right-5 opacity-100 transition-all duration-1000 transform translate-x-0">

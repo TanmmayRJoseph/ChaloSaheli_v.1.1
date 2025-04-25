@@ -27,38 +27,6 @@ export default function SignUpPage() {
       [name]: value,
     }));
   };
-  
-  
-  //*previous route handler
-  // const onSubmit = async () => {
-  //   // Basic validation: Check if any field is empty
-  //   for (const key in formData) {
-  //     if (!formData[key as keyof typeof formData]) {
-  //       toast.error(`Please fill in ${key}`);
-  //       return;
-  //     }
-  //   }
-
-  //   // Prevent signup if gender is "Male"
-  //   if (formData.gender.toLowerCase() === "male") {
-  //     toast.error("Sorry, only females can sign up.");
-  //     return;
-  //   }
-
-  //   try {
-  //     toast.loading("Signing up...");
-  //     const response = await axios.post("/api/auth/register", formData);
-  //     toast.dismiss();
-  //     toast.success("Signup successful!");
-  //     console.log(response);
-  //     router.push("/login-as-Saheli");
-  //   } catch (Error:any) {
-  //     toast.dismiss();
-  //     toast.error(`Signup failed: ${Error.message}`);
-  //     console.error("Signup failed", Error.message);
-  //   }
-  // };
-
 
   const onSubmit = async () => {
     try {
@@ -68,15 +36,16 @@ export default function SignUpPage() {
       toast.success("Signup successful!");
       console.log(response);
       router.push("/login-as-Saheli")
-    } catch (Error: any) {
+    } catch (Error) {
       toast.dismiss();
-      toast.error(`Signup failed: ${Error.message}`);
-      console.error("Signup failed", Error.message);
+      toast.error(`Signup failed: ${Error}`);
+      console.error("Signup failed", Error);
     }
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-pink-100 relative">
+      
       {/* Logo at the Top Right */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5 }}
@@ -92,6 +61,17 @@ export default function SignUpPage() {
         />
       </motion.div>
 
+      {/* Back Button at Top Left */}
+      <motion.button
+        onClick={() => router.back()}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1 }}
+        className="absolute top-5 left-5 bg-pink-500 text-white font-semibold px-6 py-2 rounded-full hover:bg-pink-600 shadow-md"
+      >
+        ← Back
+      </motion.button>
+
       {/* Heading */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
@@ -104,9 +84,8 @@ export default function SignUpPage() {
 
       {/* Sign-up Form Container */}
       <div className="w-full max-w-5xl bg-pink-200 p-10 rounded-lg shadow-lg flex items-center">
-        {/* Grid Layout for Three Sections */}
         <div className="grid grid-cols-3 w-full gap-6 items-center">
-          {/* Left Column: Input Fields */}
+          {/* Left Column */}
           <div className="flex flex-col space-y-6">
             <motion.input
               initial={{ opacity: 0, x: -50 }}
@@ -154,7 +133,7 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Middle Column: Girl Illustration */}
+          {/* Middle Column: Girl Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -169,7 +148,7 @@ export default function SignUpPage() {
             />
           </motion.div>
 
-          {/* Right Column: Input Fields */}
+          {/* Right Column */}
           <div className="flex flex-col space-y-6">
             <motion.input
               initial={{ opacity: 0, x: 50 }}
@@ -219,7 +198,7 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* Submit Button Below the Form */}
+      {/* Submit Button */}
       <motion.button
         onClick={onSubmit}
         initial={{ opacity: 0, y: 20 }}

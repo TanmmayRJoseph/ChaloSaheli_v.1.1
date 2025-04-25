@@ -80,7 +80,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen bg-pink-100">
+    <div className="flex h-screen bg-pink-100 relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-5 left-5 bg-white border-2 border-pink-500 text-pink-600 px-4 py-2 rounded-full font-medium hover:bg-pink-200 transition z-10"
+      >
+        ← Back
+      </button>
+
       {/* Left Section */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}

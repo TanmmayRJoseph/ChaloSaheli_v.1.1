@@ -2,8 +2,18 @@
 
 import { useEffect, useState } from 'react';
 
+type User = {
+  name: string;
+  userType: string;
+  phoneNo: string;
+  emailId: string;
+  gender: string;
+  dob: string;
+  emergencyNo: string;
+};
+
 export default function UserInfo() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

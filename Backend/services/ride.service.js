@@ -4,6 +4,8 @@ import { getDistanceTime } from "./maps.service.js";
 import crypto from "crypto";
 import mongoose from "mongoose";
 
+
+//* Generate OTP Service
 function generateOTP(num) {
   function generateOtp(num) {
     return crypto
@@ -13,6 +15,8 @@ function generateOTP(num) {
   return generateOtp(num);
 }
 
+
+//* Get Fare Service
 export async function getFare(pickup, destination) {
   if (!pickup || !destination) {
     throw new Error("Pickup and destination are required");
@@ -58,6 +62,7 @@ export async function getFare(pickup, destination) {
   return fare;
 }
 
+// * Create Ride Service
 export const createRide = async ({
   user,
   pickup,
@@ -79,25 +84,8 @@ export const createRide = async ({
   return ride;
 };
 
-// export const confirmRide = async ({ rideId }) => {
-//   if (!rideId) {
-//     throw new Error("Missing required fields");
-//   }
-//   await Ride.findOneAndUpdate(
-//     {_id: rideId },
-//     { status: "accepted", driver: captainId }
-//   );
-//   const ride = await Ride.findOne({ _id: rideId }).populate("user").populate("driver");
-//   if (!ride) {
-//     throw new Error("Ride not found");
-//   }
 
-//   if (ride.status === "accepted") {
-//     throw new Error("Ride already confirmed");
-//   }
-// return ride;
-// };
-
+// * Confirm Ride Service
 export async function confirmRide({ rideId, captainId }) {
   console.log("Confirming Ride...");
   console.log("Received rideId:", rideId);
@@ -135,6 +123,8 @@ export async function confirmRide({ rideId, captainId }) {
   return ride;
 }
 
+
+// * Start Ride Service
 export const startRideService = async ({ rideId, otp, captain }) => {
   if (!rideId || !otp || !captain) {
     throw new Error("Missing required fields");
@@ -173,5 +163,39 @@ export const startRideService = async ({ rideId, otp, captain }) => {
     data: ride,
   });
 
+  return ride;
+};
+
+
+// * End Ride Service
+export const endRideService = async ({ rideId, captain }) => {
+  if (!rideId || !captain) {
+    throw new Error("Missing required fields");
+  }
+
+  const ride = await Ride.findOne({
+    _id: rideId,
+    captain: captain._id,
+  })
+    .populate("user")
+    .populate("captain")
+    .select("+otp");
+
+  if (!ride) {
+    throw new Error("Ride not found");
+  }
+
+  if (ride.status !== "ongoing") {
+    throw new Error("Ride not ongoing");
+  }
+
+  await Ride.findOneAndUpdate(
+    {
+      _id: rideId,
+    },
+    {
+      status: "completed",
+    }
+  );
   return ride;
 };

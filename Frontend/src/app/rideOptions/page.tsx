@@ -2,8 +2,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 const RideOptions = () => {
+  const router = useRouter(); // Initialize router
   const [flipped, setFlipped] = useState<{ [key: string]: boolean }>({});
 
   const rides = [
@@ -35,7 +37,15 @@ const RideOptions = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-pink-100 p-6 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-pink-100 p-6 overflow-x-hidden relative">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="absolute top-6 left-6 bg-white border-2 border-pink-500 text-pink-600 px-4 py-2 rounded-full font-medium hover:bg-pink-200 transition"
+      >
+        ← Back
+      </button>
+
       <motion.h1
         className="text-3xl font-bold text-pink-600 mb-2"
         initial={{ opacity: 0, y: -20 }}

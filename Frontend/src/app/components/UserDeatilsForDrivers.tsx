@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import { useRouter } from "next/navigation";
+
 interface RideRequestProps {
   user?: {
     _id: string;
@@ -22,7 +24,8 @@ const RideRequest: React.FC<RideRequestProps> = ({
   fare,
 }) => {
   const [otp, setOtp] = useState("");
-
+ 
+  const router = useRouter();
   const handleStartRide = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -32,15 +35,19 @@ const RideRequest: React.FC<RideRequestProps> = ({
     }
 
     try {
-      const response = await axios.get("http://localhost:5000/ride/start-ride", {
-        params: { rideId, otp },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:5000/ride/start-ride",
+        {
+          params: { rideId, otp },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         alert("Ride started successfully!");
+        router.push( `/saarthiRiding?name=${encodeURIComponent(user?.name)}&phoneNo=${user?.phoneNo}&pickup=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(destination)}&fare=${fare}`);
       } else {
         alert("Failed to start ride. Please try again.");
       }
@@ -53,11 +60,21 @@ const RideRequest: React.FC<RideRequestProps> = ({
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg border border-gray-200">
       <h2 className="text-xl font-semibold text-pink-600">New Ride Request</h2>
-      <p><strong>Passenger:</strong> {user?.name || "N/A"}</p>
-      <p><strong>Phone:</strong> {user?.phoneNo || "N/A"}</p>
-      <p><strong>Pickup:</strong> {pickup}</p>
-      <p><strong>Destination:</strong> {destination}</p>
-      <p><strong>Fare:</strong> ₹{fare}</p>
+      <p>
+        <strong>Passenger:</strong> {user?.name || "N/A"}
+      </p>
+      <p>
+        <strong>Phone:</strong> {user?.phoneNo || "N/A"}
+      </p>
+      <p>
+        <strong>Pickup:</strong> {pickup}
+      </p>
+      <p>
+        <strong>Destination:</strong> {destination}
+      </p>
+      <p>
+        <strong>Fare:</strong> ₹{fare}
+      </p>
 
       <form onSubmit={handleStartRide} className="mt-4">
         <label className="block text-sm font-medium">Enter OTP:</label>
@@ -75,6 +92,7 @@ const RideRequest: React.FC<RideRequestProps> = ({
         >
           Start Ride
         </button>
+       
       </form>
     </div>
   );
