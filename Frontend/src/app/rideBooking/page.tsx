@@ -126,6 +126,16 @@ export default function RideBooking() {
     setconfirmRideDetails(ride);
   });
 
+  socket.on("ride-ended", () => {
+    setShowRides(false);
+
+    setStartRide(false);
+    setconfirmRideDetails(null);
+    setPickup("");
+    setDestination("");
+    router.push("/rideBooking");
+  });
+
   // * Start ride socket event
   useEffect(() => {
     const handleRideStarted = (ride: RideStarted) => {

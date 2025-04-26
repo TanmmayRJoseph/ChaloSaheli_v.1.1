@@ -1,24 +1,46 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useRouter } from "next/navigation";
+import { SocketContext } from "@/context/socketContext";
+import axios from "axios";
 
 export default function SaarthiRiding() {
   const router = useRouter();
-  const params = useSearchParams();
 
+  const params = useSearchParams();
+  const rideId = params.get("rideId");
   const name = params.get("name");
   const phoneNo = params.get("phoneNo");
   const pickup = params.get("pickup");
   const destination = params.get("destination");
   const fare = params.get("fare");
+
+  const { socket } = useContext(SocketContext)!;
   const [rideEnded, setRideEnded] = useState(false);
 
-  const handleEndRide = () => {
+  socket.on("ride-ended", () => {
     setRideEnded(true);
     router.push("/saarthiHome");
-    // You can call an API here to update ride status on the backend
+  });
+
+  const handleEndRide = async () => {
+    const response = await axios.post(
+      "http://localhost:5000/ride/end-ride",
+      {
+        rideId: rideId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    console.log(rideId);
+    if (response.status === 200) {
+      router.push("/saarthiHome");
+    }
   };
 
   return (

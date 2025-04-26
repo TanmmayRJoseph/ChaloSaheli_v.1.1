@@ -164,7 +164,7 @@ export default function StartRide({ ride }: StartRideProps) {
           onClick={() => router.push("/end-ride")}
           className="flex-1 bg-pink-500 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-pink-600 transition"
         >
-          End Ride
+          Make Payment
         </button>
       </motion.div>
 

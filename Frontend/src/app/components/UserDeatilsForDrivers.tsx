@@ -47,7 +47,7 @@ const RideRequest: React.FC<RideRequestProps> = ({
 
       if (response.status === 200) {
         alert("Ride started successfully!");
-        router.push( `/saarthiRiding?name=${encodeURIComponent(user?.name)}&phoneNo=${user?.phoneNo}&pickup=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(destination)}&fare=${fare}`);
+        router.push( `/saarthiRiding?name=${encodeURIComponent(user?.name)}&phoneNo=${user?.phoneNo}&pickup=${encodeURIComponent(pickup)}&destination=${encodeURIComponent(destination)}&fare=${fare}&rideId=${rideId}`);
       } else {
         alert("Failed to start ride. Please try again.");
       }

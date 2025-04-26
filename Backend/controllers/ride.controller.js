@@ -3,6 +3,7 @@ import {
   getFare,
   confirmRide,
   startRideService,
+  endRideService
 } from "../services/ride.service.js";
 import {
   getSaarthiInTheRadius,
