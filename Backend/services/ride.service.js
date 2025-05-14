@@ -30,14 +30,14 @@ export async function getFare(pickup, destination) {
   };
 
   const perKmRate = {
-    auto: 5,
-    car: 8,
-    moto: 3,
+    auto: 4,
+    car: 6,
+    moto: 2,
   };
 
   const perMinuteRate = {
-    auto: 2,
-    car: 3,
+    auto: 1,
+    car: 2,
     moto: 1.5,
   };
   console.log(distanceTime); //!Debugging step console here

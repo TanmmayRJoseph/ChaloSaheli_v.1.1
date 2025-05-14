@@ -29,7 +29,7 @@ app.use(morgan("dev"));
 app.get("/", (req, res) => {
   res.json({
     message: "Server is running successfully🏃🏃",
-    progress: "doing work",
+    progress: "Project completed 100% ",
     status: 200,
   });
 });

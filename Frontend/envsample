@@ -1,19 +1,4 @@
-MONGODB_URI="your mongodb-url"
 
-
-GOOGLE_MAP_API="your-google-map-api"
-
-
-JWT_SECRET="your-jwt-secret"
-
-
-TWILIO_SID="your_twilio_sid"
-
-
-TWILIO_AUTH_TOKEN="your_twilio_auth_token"
-
-
-STRIPE_SECRET_KEY="your_stripe_secret"
 
 
 

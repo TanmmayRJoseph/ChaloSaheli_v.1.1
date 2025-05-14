@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { SocketContext } from "@/context/socketContext";
 import DriverLoading from "../components/WaitingForDrivers";
 import RideConfirmation from "@/app/components/ConfirmedRide";
-import StartRide from "@/app/startRide/page";
+
 import { useRouter } from "next/navigation";
 
 const containerStyle = {
@@ -74,11 +74,12 @@ interface RideDetails {
 }
 
 export default function RideBooking() {
+  const isSuggestionClicked = useRef(false);
   const router = useRouter();
   const [pickup, setPickup] = useState("");
-  const [startRide, setStartRide] = useState(false); //today
-  const [sendingDataToStartRide, setSendingDataToStartRide] =
-    useState<RideStarted | null>(null);
+  // const [startRide, setStartRide] = useState(false); //today
+  // const [sendingDataToStartRide, setSendingDataToStartRide] =
+  //   useState<RideStarted | null>(null);
 
   const [destination, setDestination] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
@@ -126,23 +127,38 @@ export default function RideBooking() {
     setconfirmRideDetails(ride);
   });
 
-  socket.on("ride-ended", () => {
-    setShowRides(false);
+  // socket.on("ride-ended", () => {
+  //   setShowRides(false);
 
-    setStartRide(false);
-    setconfirmRideDetails(null);
-    setPickup("");
-    setDestination("");
-    router.push("/rideBooking");
-  });
+  //   setconfirmRideDetails(null);
+  //   setPickup("");
+  //   setDestination("");
+  //   // load the map again
+  //   router.push("/rideBooking");
+  //   router.refresh();
+  // });
 
   // * Start ride socket event
   useEffect(() => {
     const handleRideStarted = (ride: RideStarted) => {
       console.log("here is the ride", ride);
-      setSendingDataToStartRide(ride);
+
       setconfirmRideDetails(null);
-      setStartRide(true);
+      setShowRides(false);
+
+      router.push(
+        `/startRide?destination=${encodeURIComponent(
+          ride.destination
+        )}&captain=${encodeURIComponent(
+          ride.captain.name
+        )}&vechile=${encodeURIComponent(
+          ride.captain.vechile
+        )}&fare=${encodeURIComponent(
+          ride.fare.toString()
+        )}&status=started&otp=${encodeURIComponent(
+          ride.otp
+        )}&pickup=${encodeURIComponent(ride.pickup)}`
+      );
     };
 
     // ✅ Attach the socket listener correctly
@@ -175,6 +191,10 @@ export default function RideBooking() {
 
   // * Fetch place suggestions for pickup point DONT CHANGE
   useEffect(() => {
+    if (isSuggestionClicked.current) {
+      isSuggestionClicked.current = false;
+      return;
+    }
     const fetchPickupSuggestions = async () => {
       if (pickup.length > 2) {
         try {
@@ -202,6 +222,10 @@ export default function RideBooking() {
 
   // * Fetch place suggestions for destination DONT CHANGE
   useEffect(() => {
+    if (isSuggestionClicked.current) {
+      isSuggestionClicked.current = false;
+      return;
+    }
     const fetchPlaceSuggestions = async () => {
       if (destination.length > 2) {
         try {
@@ -307,12 +331,13 @@ export default function RideBooking() {
             />
             {/* Pickup Suggestions Box */}
             {pickupSuggestions.length > 0 && (
-              <ul className="absolute bg-white w-full border border-gray-200 rounded shadow-lg mt-1 max-h-60 overflow-y-auto text-black">
+              <ul className="absolute z-10 bg-white w-full border border-gray-200 rounded shadow-lg mt-1 max-h-60 overflow-y-auto text-black">
                 {pickupSuggestions.map((suggestion, index) => (
                   <li
                     key={index}
                     className="p-3 cursor-pointer hover:bg-gray-200"
                     onClick={() => {
+                      isSuggestionClicked.current = true;
                       setPickup(suggestion.description);
                       setPickupSuggestions([]); // Hide suggestions after selection
                     }}
@@ -342,6 +367,7 @@ export default function RideBooking() {
                     key={index}
                     className="p-3 cursor-pointer hover:bg-gray-200"
                     onClick={() => {
+                      isSuggestionClicked.current = true;
                       setDestination(suggestion.description);
                       setSuggestions([]); // Hide suggestions after selection
                     }}
@@ -448,7 +474,7 @@ export default function RideBooking() {
       {/* Driver Loading */}
       {waitingForDrivers && <DriverLoading />}
       {confirmRideDetails && <RideConfirmation ride={confirmRideDetails} />}
-      {startRide && <StartRide ride={sendingDataToStartRide} />}
+      {/* {startRide && <StartRide ride={sendingDataToStartRide} />} */}
     </div>
   );
 }

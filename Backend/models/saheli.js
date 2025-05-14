@@ -27,7 +27,7 @@ saheliSchema.pre("save", async function (next) {
 });
 //generating token
 saheliSchema.methods.generateAuthToken=function(){
-  const token=jwt.sign({_id:this._id,emailId:this.emailId},process.env.SECRET_KEY);
+  const token=jwt.sign({_id:this._id,emailId:this.emailId,userType: this.userType,},process.env.SECRET_KEY);
   return token
 }
 //comparing password
